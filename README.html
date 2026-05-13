@@ -1,0 +1,1685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ethereal Project — E STUDIO</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #030303;
+      --surface-low: #0a0a0a;
+      --surface-mid: #111111;
+      --surface-high: #141414;
+      --border: #1a1a1a;
+      --border-hover: #2a2a2a;
+      --text-primary: #e5e5e5;
+      --text-secondary: #999999;
+      --text-muted: #666666;
+      --accent: #ffffff;
+      --accent-dim: rgba(255,255,255,0.06);
+      --accent-blue: #61dafb;
+      --accent-purple: #646cff;
+      --accent-green: #22c55e;
+      --accent-cyan: #06b6d4;
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --font-display: 'Plus Jakarta Sans', var(--font-sans);
+      --font-mono: 'Space Grotesk', 'Fira Code', 'Cascadia Code', monospace;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scrollbar-width: thin;
+      scrollbar-color: #333 transparent;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.7;
+      font-size: 15px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+
+    a { color: var(--accent-blue); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: #8be9fd; }
+
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 80px 24px 60px;
+      position: relative;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 200px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border-hover), transparent);
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #ffffff 0%, #999999 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero .subtitle {
+      font-size: 17px;
+      color: var(--text-secondary);
+      margin-bottom: 8px;
+      font-weight: 300;
+    }
+
+    .hero .subtitle-cn {
+      font-size: 14px;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+    }
+
+    .badges {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      font-weight: 500;
+      background: var(--surface-mid);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      transition: border-color 0.2s;
+    }
+
+    .badge:hover { border-color: var(--border-hover); }
+
+    .badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      display: inline-block;
+    }
+
+    /* Navigation */
+    .toc {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(3,3,3,0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      overflow-x: auto;
+    }
+
+    .toc-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      display: flex;
+      gap: 4px;
+      padding: 8px 0;
+    }
+
+    .toc a {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      padding: 6px 12px;
+      border-radius: 6px;
+      white-space: nowrap;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+
+    .toc a:hover {
+      color: var(--text-primary);
+      background: var(--accent-dim);
+    }
+
+    /* Sections */
+    section {
+      padding: 60px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    section:last-of-type { border-bottom: none; }
+
+    h2 {
+      font-family: var(--font-display);
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      margin-bottom: 8px;
+      color: var(--accent);
+    }
+
+    h2 .cn {
+      font-size: 14px;
+      font-weight: 400;
+      color: var(--text-muted);
+      margin-left: 12px;
+    }
+
+    h3 {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 600;
+      margin: 36px 0 16px;
+      color: var(--text-primary);
+    }
+
+    h4 {
+      font-family: var(--font-display);
+      font-size: 16px;
+      font-weight: 600;
+      margin: 24px 0 12px;
+      color: var(--text-primary);
+    }
+
+    .section-desc {
+      color: var(--text-secondary);
+      margin-bottom: 32px;
+      font-size: 15px;
+      max-width: 700px;
+    }
+
+    p { margin-bottom: 16px; color: var(--text-secondary); }
+
+    /* Tables */
+    .table-wrap {
+      overflow-x: auto;
+      margin: 20px 0;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+
+    thead {
+      background: var(--surface-mid);
+    }
+
+    th {
+      text-align: left;
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border);
+    }
+
+    td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      vertical-align: top;
+    }
+
+    tr:last-child td { border-bottom: none; }
+
+    tbody tr {
+      transition: background 0.15s;
+    }
+
+    tbody tr:hover {
+      background: var(--accent-dim);
+    }
+
+    td code {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--surface-high);
+      color: var(--accent-blue);
+    }
+
+    /* Code blocks */
+    pre {
+      background: var(--surface-low);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px 24px;
+      overflow-x: auto;
+      margin: 20px 0;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    pre code {
+      font-family: var(--font-mono);
+      color: var(--text-secondary);
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 13px;
+    }
+
+    .code-comment { color: var(--text-muted); }
+    .code-keyword { color: var(--accent-purple); }
+    .code-string { color: var(--accent-green); }
+    .code-prop { color: var(--accent-cyan); }
+
+    /* Feature grid */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin: 24px 0;
+    }
+
+    .feature-card {
+      background: var(--surface-low);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      transition: all 0.3s ease;
+    }
+
+    .feature-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-2px);
+    }
+
+    .feature-card h4 {
+      margin: 0 0 8px;
+      font-size: 15px;
+      color: var(--accent);
+    }
+
+    .feature-card p {
+      font-size: 13px;
+      margin: 0;
+      color: var(--text-muted);
+      line-height: 1.6;
+    }
+
+    .feature-card .tag {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+
+    .tag-public { background: rgba(34,197,94,0.1); color: #22c55e; }
+    .tag-admin { background: rgba(239,68,68,0.1); color: #ef4444; }
+    .tag-auth { background: rgba(251,191,36,0.1); color: #fbbf24; }
+
+    /* Structure tree */
+    .tree {
+      background: var(--surface-low);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.8;
+      color: var(--text-muted);
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    .tree .dir { color: var(--accent-blue); font-weight: 500; }
+    .tree .file { color: var(--text-secondary); }
+    .tree .comment { color: #555; }
+
+    /* Steps */
+    .steps {
+      counter-reset: step;
+      margin: 24px 0;
+    }
+
+    .step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 16px;
+      align-items: flex-start;
+    }
+
+    .step::before {
+      counter-increment: step;
+      content: counter(step);
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--surface-high);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-top: 2px;
+    }
+
+    .step-content {
+      flex: 1;
+    }
+
+    .step-content p {
+      margin: 0 0 8px;
+      color: var(--text-secondary);
+    }
+
+    .step-content code {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: var(--surface-high);
+      color: var(--accent-blue);
+      font-size: 13px;
+    }
+
+    /* Permission matrix */
+    .matrix {
+      margin: 20px 0;
+    }
+
+    .matrix td:nth-child(n+2),
+    .matrix th:nth-child(n+2) {
+      text-align: center;
+      width: 100px;
+    }
+
+    .check { color: #22c55e; font-size: 16px; }
+    .cross { color: #ef4444; font-size: 16px; }
+
+    /* Color swatches */
+    .swatches {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin: 20px 0;
+    }
+
+    .swatch {
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      overflow: hidden;
+    }
+
+    .swatch-color {
+      height: 48px;
+    }
+
+    .swatch-info {
+      padding: 10px 12px;
+      background: var(--surface-low);
+    }
+
+    .swatch-name {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-primary);
+      margin-bottom: 2px;
+    }
+
+    .swatch-hex {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* Font showcase */
+    .font-showcase {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+
+    .font-card {
+      background: var(--surface-low);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+    }
+
+    .font-card .sample {
+      font-size: 24px;
+      margin-bottom: 12px;
+      color: var(--accent);
+    }
+
+    .font-card .meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    /* API endpoint rows */
+    .method {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 4px;
+      display: inline-block;
+    }
+
+    .method-get { background: rgba(34,197,94,0.1); color: #22c55e; }
+    .method-post { background: rgba(96,165,250,0.1); color: #60a5fa; }
+    .method-put { background: rgba(251,191,36,0.1); color: #fbbf24; }
+    .method-delete { background: rgba(239,68,68,0.1); color: #ef4444; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      padding: 60px 24px;
+      border-top: 1px solid var(--border);
+    }
+
+    .footer .brand {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+
+    .footer .tagline {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .footer .tech {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 16px;
+      opacity: 0.5;
+    }
+
+    /* Lists */
+    ul {
+      margin: 12px 0;
+      padding-left: 20px;
+    }
+
+    li {
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      font-size: 14px;
+    }
+
+    li strong {
+      color: var(--text-primary);
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero h1 { font-size: 28px; }
+      h2 { font-size: 22px; }
+      .feature-grid { grid-template-columns: 1fr; }
+      .toc-inner { gap: 0; }
+      .toc a { padding: 6px 8px; font-size: 11px; }
+      section { padding: 40px 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <header class="hero">
+    <h1>Ethereal Project</h1>
+    <p class="subtitle">A Full-Stack VFX Portfolio & Content Management System</p>
+    <p class="subtitle-cn">E STUDIO &mdash; 面向影视特效与生成式影像的全栈作品集网站</p>
+    <div class="badges">
+      <span class="badge"><span class="badge-dot" style="background:#61dafb"></span>React 19.0</span>
+      <span class="badge"><span class="badge-dot" style="background:#3178c6"></span>TypeScript 5.8</span>
+      <span class="badge"><span class="badge-dot" style="background:#646cff"></span>Vite 6.2</span>
+      <span class="badge"><span class="badge-dot" style="background:#06b6d4"></span>Tailwind CSS 4.1</span>
+      <span class="badge"><span class="badge-dot" style="background:#ffffff"></span>Express 5.2</span>
+      <span class="badge"><span class="badge-dot" style="background:#22c55e"></span>ISC License</span>
+    </div>
+  </header>
+
+  <!-- TOC -->
+  <nav class="toc">
+    <div class="toc-inner">
+      <a href="#overview">Overview</a>
+      <a href="#features">Features</a>
+      <a href="#tech-stack">Tech Stack</a>
+      <a href="#structure">Structure</a>
+      <a href="#getting-started">Getting Started</a>
+      <a href="#api">API Reference</a>
+      <a href="#permissions">Permissions</a>
+      <a href="#routing">Routing</a>
+      <a href="#design">Design System</a>
+      <a href="#deployment">Deployment Guide</a>
+    </div>
+  </nav>
+
+  <main class="container">
+
+    <!-- Overview -->
+    <section id="overview">
+      <h2>Project Overview <span class="cn">项目概览</span></h2>
+      <p class="section-desc">
+        <strong>Ethereal Project</strong> is the official portfolio and content management system for <strong>E STUDIO</strong>, a visual effects studio specializing in cinematic imagery and generative visual content. Built with a dark, high-density, film-grade visual language, the platform provides a complete solution for showcasing VFX projects.
+      </p>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Module</th><th>Description</th><th>Port</th><th>Runtime</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>ethereal/</code></td>
+              <td>React SPA Frontend / React 前端应用</td>
+              <td><code>3000</code></td>
+              <td>Vite Dev Server</td>
+            </tr>
+            <tr>
+              <td><code>ethereal-api-mock/</code></td>
+              <td>Express Mock API Backend / Express 模拟后端</td>
+              <td><code>8080</code></td>
+              <td>Node.js</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <h4>Cinematic Visual Design</h4>
+          <p>Ultra-dark theme with custom typography (Inter / Plus Jakarta Sans / Space Grotesk) and micro dot-matrix background texture.</p>
+        </div>
+        <div class="feature-card">
+          <h4>Project Showcase</h4>
+          <p>Video/image gallery with cover preview, hover playback, fullscreen viewing, and file download capabilities.</p>
+        </div>
+        <div class="feature-card">
+          <h4>Admin Panel</h4>
+          <p>Full CRUD for projects, drag-and-drop multi-file upload, tag management (merge/delete), and user management.</p>
+        </div>
+        <div class="feature-card">
+          <h4>RBAC Access Control</h4>
+          <p>Three-tier role system (Super Admin / Admin / Guest) with invitation-based registration mechanism.</p>
+        </div>
+        <div class="feature-card">
+          <h4>Bookmark System</h4>
+          <p>Logged-in users can bookmark/unbookmark projects with a dedicated bookmarks page for quick access.</p>
+        </div>
+        <div class="feature-card">
+          <h4>Shareable Filter Links</h4>
+          <p>Admins can generate sharable URLs that snapshot the current filter state, viewable without login.</p>
+        </div>
+        <div class="feature-card">
+          <h4>Bilingual Content</h4>
+          <p>Project titles, descriptions, and tags support both Chinese and English for international audiences.</p>
+        </div>
+        <div class="feature-card">
+          <h4>Responsive Design</h4>
+          <p>Full mobile adaptation with hamburger menu and adaptive grid layouts for all screen sizes.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features">
+      <h2>Features <span class="cn">功能展示</span></h2>
+
+      <h3>1. Home / 首页</h3>
+      <ul>
+        <li>Full-screen hero background with locked viewport (no scrolling)</li>
+        <li>Gradient overlay for text readability</li>
+        <li>Motion (Framer Motion) entrance animations</li>
+        <li>Brand tagline typography in bottom-left corner</li>
+      </ul>
+
+      <h3>2. Projects Gallery / 项目列表</h3>
+      <div class="feature-grid">
+        <div class="feature-card">
+          <span class="tag tag-public">Public</span>
+          <h4>Category & Tag Filtering</h4>
+          <p>Filter by project type and task tags with real-time results.</p>
+        </div>
+        <div class="feature-card">
+          <span class="tag tag-public">Public</span>
+          <h4>A-Z Navigation</h4>
+          <p>Alphabetical navigation supporting Chinese pinyin initial letter sorting.</p>
+        </div>
+        <div class="feature-card">
+          <span class="tag tag-public">Public</span>
+          <h4>Fuzzy Search</h4>
+          <p>Real-time matching on title, English title, tags, and description.</p>
+        </div>
+        <div class="feature-card">
+          <span class="tag tag-public">Public</span>
+          <h4>Zoom Control</h4>
+          <p>Slider to adjust card size from 0.5x to 1.5x for optimal viewing.</p>
+        </div>
+      </div>
+
+      <h3>3. Project Detail / 项目详情</h3>
+      <ul>
+        <li><strong>Custom Video Player</strong> &mdash; Play/pause, progress bar with drag seek, mute toggle</li>
+        <li><strong>6-Pattern Masonry Gallery</strong> &mdash; Six alternating layout templates for mixed media</li>
+        <li><strong>Fullscreen Lightbox</strong> &mdash; Click to enlarge, ESC to exit</li>
+        <li><strong>File Download</strong> &mdash; Logged-in users can download all gallery assets</li>
+        <li><strong>Bookmark Toggle</strong> &mdash; One-click bookmark/unbookmark</li>
+        <li><strong>Keyboard Navigation</strong> &mdash; ESC returns to project list</li>
+      </ul>
+
+      <h3>4. Worldview / 世界观</h3>
+      <ul>
+        <li>Brand narrative page showcasing E STUDIO's creative philosophy</li>
+        <li>Four taxonomy categories: Geospatial Signatures, Temporal Epochs, Biological Kinematics, Stylistic Paradigms</li>
+        <li>Alternating image-text layouts with scroll-triggered animations</li>
+      </ul>
+
+      <h3>5. Admin Panel / 管理后台</h3>
+      <h4>User Management</h4>
+      <ul>
+        <li>Generate invitation links by permission level</li>
+        <li>User list with email, role, inviter, registration time, last login</li>
+        <li>Delete users (subject to permission constraints)</li>
+      </ul>
+      <h4>Project Management</h4>
+      <ul>
+        <li>Project list with search, edit, and delete</li>
+        <li>Create/edit form with bilingual fields</li>
+        <li>Drag-and-drop multi-file upload (up to 50 files, 1 GB each)</li>
+        <li>Set cover image and main video; auto-cleanup of removed files</li>
+      </ul>
+      <h4>Tag Management</h4>
+      <ul>
+        <li>Usage frequency visualization (bar chart + tag cloud)</li>
+        <li>Merge tags (replace source with target across all projects)</li>
+        <li>Delete tags with autocomplete and Jaccard similarity suggestions</li>
+      </ul>
+    </section>
+
+    <!-- Tech Stack -->
+    <section id="tech-stack">
+      <h2>Tech Stack <span class="cn">技术栈</span></h2>
+
+      <h3>Frontend <code>ethereal/</code></h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Technology</th><th>Version</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>React</td><td><code>19.0</code></td><td>UI Framework</td></tr>
+            <tr><td>TypeScript</td><td><code>5.8</code></td><td>Type System</td></tr>
+            <tr><td>Vite</td><td><code>6.2</code></td><td>Build Tool & Dev Server</td></tr>
+            <tr><td>Tailwind CSS</td><td><code>4.1</code></td><td>Utility-First CSS Framework</td></tr>
+            <tr><td>React Router DOM</td><td><code>7.14</code></td><td>Client-Side Routing</td></tr>
+            <tr><td>Motion (Framer Motion)</td><td><code>12.23</code></td><td>Animation Library</td></tr>
+            <tr><td>Lucide React</td><td><code>0.546</code></td><td>Icon Library</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Backend <code>ethereal-api-mock/</code></h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr><th>Technology</th><th>Version</th><th>Purpose</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Express</td><td><code>5.2</code></td><td>Web Framework</td></tr>
+            <tr><td>Multer</td><td><code>2.1</code></td><td>File Upload Middleware</td></tr>
+            <tr><td>UUID</td><td><code>14.0</code></td><td>Unique Identifier Generation</td></tr>
+            <tr><td>CORS</td><td><code>2.8</code></td><td>Cross-Origin Support</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Data Storage</h3>
+      <ul>
+        <li><strong>JSON File Persistence</strong> &mdash; <code>ethereal-api-mock/data/db.json</code></li>
+        <li><strong>Static File Storage</strong> &mdash; <code>ethereal/public/asset/{projectId}/</code></li>
+      </ul>
+    </section>
+
+    <!-- Structure -->
+    <section id="structure">
+      <h2>Project Structure <span class="cn">项目结构</span></h2>
+      <div class="tree"><span class="dir">EtherealProject/</span>
+├── README.md                                  <span class="comment"># Documentation</span>
+├── README.html                                <span class="comment"># HTML Documentation</span>
+│
+├── <span class="dir">ethereal/</span>                                  <span class="comment"># Frontend Application</span>
+│   ├── <span class="file">index.html</span>                             <span class="comment"># HTML entry point</span>
+│   ├── <span class="file">package.json</span>                           <span class="comment"># Frontend dependencies</span>
+│   ├── <span class="file">tsconfig.json</span>                          <span class="comment"># TypeScript config</span>
+│   ├── <span class="file">vite.config.ts</span>                         <span class="comment"># Vite config (proxy, plugins)</span>
+│   ├── <span class="dir">public/</span>
+│   │   ├── <span class="file">home-bg.png</span>                        <span class="comment"># Hero background image</span>
+│   │   └── <span class="dir">asset/</span>                             <span class="comment"># Project media assets</span>
+│   │       ├── <span class="dir">三尺之下/</span>
+│   │       ├── <span class="dir">攻玉/</span>
+│   │       └── ...                            <span class="comment"># 15+ project directories</span>
+│   └── <span class="dir">src/</span>
+│       ├── <span class="file">main.tsx</span>                            <span class="comment"># React entry point</span>
+│       ├── <span class="file">App.tsx</span>                             <span class="comment"># Router & global layout</span>
+│       ├── <span class="file">index.css</span>                           <span class="comment"># Global styles & Tailwind theme</span>
+│       ├── <span class="dir">components/</span>
+│       │   ├── <span class="file">Navbar.tsx</span>                      <span class="comment"># Global nav (desktop + mobile)</span>
+│       │   └── <span class="file">Footer.tsx</span>                      <span class="comment"># Global footer</span>
+│       ├── <span class="dir">context/</span>
+│       │   └── <span class="file">AuthContext.tsx</span>                  <span class="comment"># Auth context</span>
+│       ├── <span class="dir">data/</span>
+│       │   └── <span class="file">projects.ts</span>                     <span class="comment"># Local data (fallback) + config</span>
+│       └── <span class="dir">pages/</span>
+│           ├── <span class="file">Home.tsx</span>                         <span class="comment"># Full-screen hero landing</span>
+│           ├── <span class="file">Projects.tsx</span>                     <span class="comment"># Gallery with filters</span>
+│           ├── <span class="file">ProjectDetail.tsx</span>                <span class="comment"># Detail + video player</span>
+│           ├── <span class="file">Worldview.tsx</span>                    <span class="comment"># Brand narrative</span>
+│           ├── <span class="file">About.tsx</span>                        <span class="comment"># Studio info + contact</span>
+│           ├── <span class="file">LoginPage.tsx</span>                    <span class="comment"># Login form</span>
+│           ├── <span class="file">RegisterPage.tsx</span>                 <span class="comment"># Invite-code registration</span>
+│           ├── <span class="file">BookmarksPage.tsx</span>                <span class="comment"># Saved projects</span>
+│           ├── <span class="file">SharePage.tsx</span>                    <span class="comment"># Shared filter view</span>
+│           ├── <span class="file">AdminProjectsPage.tsx</span>            <span class="comment"># Admin panel (tabs)</span>
+│           ├── <span class="file">AdminProjectsPage.list.tsx</span>       <span class="comment"># Project list management</span>
+│           ├── <span class="file">AdminProjectsPage.form.tsx</span>       <span class="comment"># Project create/edit form</span>
+│           ├── <span class="file">AdminProjectsPage.components.tsx</span> <span class="comment"># Admin components</span>
+│           ├── <span class="file">AdminUsersTab.tsx</span>                <span class="comment"># User management</span>
+│           └── <span class="file">AdminTagsTab.tsx</span>                 <span class="comment"># Tag management</span>
+│
+├── <span class="dir">ethereal-api-mock/</span>                          <span class="comment"># Backend Mock API</span>
+│   ├── <span class="file">package.json</span>                            <span class="comment"># Backend dependencies</span>
+│   ├── <span class="file">server.js</span>                               <span class="comment"># Express server (all endpoints)</span>
+│   └── <span class="dir">data/</span>
+│       └── <span class="file">db.json</span>                             <span class="comment"># JSON file database</span></div>
+    </section>
+
+    <!-- Getting Started -->
+    <section id="getting-started">
+      <h2>Getting Started <span class="cn">快速开始</span></h2>
+
+      <h3>Prerequisites</h3>
+      <ul>
+        <li><strong>Node.js</strong> &gt;= 18</li>
+        <li><strong>npm</strong> or <strong>yarn</strong></li>
+      </ul>
+
+      <h3>Installation & Launch</h3>
+      <div class="steps">
+        <div class="step">
+          <div class="step-content">
+            <p>Clone the repository</p>
+            <code>git clone &lt;repo-url&gt; && cd EtherealProject</code>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-content">
+            <p>Install frontend dependencies</p>
+            <code>cd ethereal && npm install</code>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-content">
+            <p>Install backend dependencies</p>
+            <code>cd ../ethereal-api-mock && npm install</code>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-content">
+            <p>Start the backend server (port 8080)</p>
+            <code>node server.js</code>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-content">
+            <p>Open a new terminal, start the frontend (port 3000)</p>
+            <code>cd ethereal && npm run dev</code>
+          </div>
+        </div>
+      </div>
+
+      <h3>Access URLs</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Service</th><th>URL</th></tr></thead>
+          <tbody>
+            <tr><td>Frontend</td><td><code>http://localhost:3000</code></td></tr>
+            <tr><td>Backend API</td><td><code>http://localhost:8080</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Default Admin Account</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Field</th><th>Value</th></tr></thead>
+          <tbody>
+            <tr><td>Email</td><td><code>yao_pengcheng@outlook.com</code></td></tr>
+            <tr><td>Password</td><td><code>123456</code></td></tr>
+            <tr><td>Role</td><td><code>super_admin</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p style="font-size: 13px; color: var(--text-muted); margin-top: 16px;">
+        <strong>Note:</strong> On first startup, the backend automatically imports preset project data from <code>ethereal/src/data/projects.ts</code>.
+      </p>
+
+      <h3>Available Scripts</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Command</th><th>Directory</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>npm run dev</code></td><td><code>ethereal/</code></td><td>Start Vite dev server on port 3000</td></tr>
+            <tr><td><code>npm run build</code></td><td><code>ethereal/</code></td><td>Build for production to <code>dist/</code></td></tr>
+            <tr><td><code>npm run preview</code></td><td><code>ethereal/</code></td><td>Preview production build locally</td></tr>
+            <tr><td><code>npm run lint</code></td><td><code>ethereal/</code></td><td>TypeScript type check (no emit)</td></tr>
+            <tr><td><code>npm run clean</code></td><td><code>ethereal/</code></td><td>Remove <code>dist/</code> directory</td></tr>
+            <tr><td><code>node server.js</code></td><td><code>ethereal-api-mock/</code></td><td>Start Express API server on port 8080</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- API Reference -->
+    <section id="api">
+      <h2>API Reference <span class="cn">API 接口文档</span></h2>
+      <p class="section-desc">Base URL: <code>http://localhost:8080</code></p>
+
+      <h3>Authentication</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/login</code></td><td>User login</td><td>Public</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/auth/register</code></td><td>Register with invite code</td><td>Public</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Projects</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/api/projects</code></td><td>List all projects</td><td>Public</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/api/projects/:id</code></td><td>Get single project</td><td>Public</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/admin/projects</code></td><td>Create project</td><td>admin+</td></tr>
+            <tr><td><span class="method method-put">PUT</span></td><td><code>/api/admin/projects/:id</code></td><td>Update project</td><td>admin+</td></tr>
+            <tr><td><span class="method method-delete">DELETE</span></td><td><code>/api/admin/projects/:id</code></td><td>Delete project</td><td>super_admin</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Users</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/api/admin/users</code></td><td>List users</td><td>Public</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/admin/invite</code></td><td>Generate invite code</td><td>admin+</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/admin/delete-user</code></td><td>Delete user</td><td>Permission matrix</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Tags</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/api/admin/tags</code></td><td>List tags with stats</td><td>Public</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/admin/tags/merge</code></td><td>Merge tags</td><td>admin+</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/admin/tags/delete</code></td><td>Delete tag</td><td>super_admin</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Bookmarks</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/api/bookmarks</code></td><td>List bookmarks</td><td>Logged-in</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/bookmarks/add</code></td><td>Add bookmark</td><td>Logged-in</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/bookmarks/remove</code></td><td>Remove bookmark</td><td>Logged-in</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Files</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/admin/upload</code></td><td>Batch upload (max 50 files, 1 GB)</td><td>Logged-in</td></tr>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/admin/upload/single</code></td><td>Single file upload</td><td>Logged-in</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/api/download</code></td><td>Download asset file</td><td>Logged-in</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Share</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Method</th><th>Endpoint</th><th>Description</th><th>Auth</th></tr></thead>
+          <tbody>
+            <tr><td><span class="method method-post">POST</span></td><td><code>/api/admin/share-filter</code></td><td>Create filter share link</td><td>admin+</td></tr>
+            <tr><td><span class="method method-get">GET</span></td><td><code>/api/share/:token</code></td><td>Get shared content</td><td>Public</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Permissions -->
+    <section id="permissions">
+      <h2>RBAC & Permissions <span class="cn">权限体系</span></h2>
+
+      <h3>Three-Tier Role System</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Role</th><th>Identifier</th><th>Capabilities</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Super Admin</strong></td><td><code>super_admin</code></td><td>Full access: delete projects, delete tags, delete any user</td></tr>
+            <tr><td><strong>Admin</strong></td><td><code>admin</code></td><td>Create/edit projects, manage tags, invite admins & guests, delete guests</td></tr>
+            <tr><td><strong>Guest</strong></td><td><code>guest</code></td><td>Browse projects, bookmark, download assets</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Invitation Permission Matrix</h3>
+      <div class="table-wrap matrix">
+        <table>
+          <thead><tr><th>Inviter &#8595; \ Invitee &#8594;</th><th>super_admin</th><th>admin</th><th>guest</th></tr></thead>
+          <tbody>
+            <tr><td><strong>super_admin</strong></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+            <tr><td><strong>admin</strong></td><td class="cross">&#10007;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+            <tr><td><strong>guest</strong></td><td class="cross">&#10007;</td><td class="cross">&#10007;</td><td class="cross">&#10007;</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Deletion Permission Matrix</h3>
+      <div class="table-wrap matrix">
+        <table>
+          <thead><tr><th>Operator &#8595; \ Target &#8594;</th><th>super_admin</th><th>admin</th><th>guest</th></tr></thead>
+          <tbody>
+            <tr><td><strong>super_admin</strong></td><td class="check">&#10003;</td><td class="check">&#10003;</td><td class="check">&#10003;</td></tr>
+            <tr><td><strong>admin</strong></td><td class="cross">&#10007;</td><td class="cross">&#10007;</td><td class="check">&#10003;</td></tr>
+            <tr><td><strong>guest</strong></td><td class="cross">&#10007;</td><td class="cross">&#10007;</td><td class="cross">&#10007;</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Routing -->
+    <section id="routing">
+      <h2>Routing <span class="cn">页面路由</span></h2>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Path</th><th>Page</th><th>Access</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>/</code></td><td>Home</td><td><span class="tag tag-public" style="margin:0">Public</span></td><td>Full-screen hero landing page</td></tr>
+            <tr><td><code>/projects</code></td><td>Projects</td><td><span class="tag tag-public" style="margin:0">Public</span></td><td>Gallery with filtering, search, zoom</td></tr>
+            <tr><td><code>/project/:id</code></td><td>Detail</td><td><span class="tag tag-public" style="margin:0">Public</span></td><td>Video player, gallery, downloads</td></tr>
+            <tr><td><code>/worldview</code></td><td>Worldview</td><td><span class="tag tag-public" style="margin:0">Public</span></td><td>Brand narrative & philosophy</td></tr>
+            <tr><td><code>/about</code></td><td>About</td><td><span class="tag tag-public" style="margin:0">Public</span></td><td>Studio info & contact</td></tr>
+            <tr><td><code>/login</code></td><td>Login</td><td><span class="tag tag-public" style="margin:0">Public</span></td><td>Email + password login form</td></tr>
+            <tr><td><code>/register?code=xxx</code></td><td>Register</td><td><span class="tag tag-auth" style="margin:0">Invite</span></td><td>Invitation-based registration</td></tr>
+            <tr><td><code>/admin</code></td><td>Admin</td><td><span class="tag tag-admin" style="margin:0">Admin+</span></td><td>Users, Projects, Tags management</td></tr>
+            <tr><td><code>/bookmarks</code></td><td>Bookmarks</td><td><span class="tag tag-auth" style="margin:0">Auth</span></td><td>Saved projects with remove</td></tr>
+            <tr><td><code>/share/:token</code></td><td>Share</td><td><span class="tag tag-public" style="margin:0">Public</span></td><td>Shared filter view (no login)</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Design System -->
+    <section id="design">
+      <h2>Design System <span class="cn">设计系统</span></h2>
+
+      <h3>Color Palette</h3>
+      <div class="swatches">
+        <div class="swatch">
+          <div class="swatch-color" style="background:#030303;border-bottom:1px solid var(--border)"></div>
+          <div class="swatch-info"><div class="swatch-name">Background</div><div class="swatch-hex">#030303</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#0a0a0a;border-bottom:1px solid var(--border)"></div>
+          <div class="swatch-info"><div class="swatch-name">Surface Low</div><div class="swatch-hex">#0a0a0a</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#141414;border-bottom:1px solid var(--border)"></div>
+          <div class="swatch-info"><div class="swatch-name">Surface High</div><div class="swatch-hex">#141414</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#ffffff"></div>
+          <div class="swatch-info"><div class="swatch-name">Primary</div><div class="swatch-hex">#ffffff</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#e5e5e5"></div>
+          <div class="swatch-info"><div class="swatch-name">Text Main</div><div class="swatch-hex">#e5e5e5</div></div>
+        </div>
+        <div class="swatch">
+          <div class="swatch-color" style="background:#666666"></div>
+          <div class="swatch-info"><div class="swatch-name">Text Muted</div><div class="swatch-hex">#666666</div></div>
+        </div>
+      </div>
+
+      <h3>Typography</h3>
+      <div class="font-showcase">
+        <div class="font-card">
+          <div class="sample" style="font-family:'Inter',sans-serif">Inter Typeface</div>
+          <div class="meta">Sans &middot; Body text, descriptions</div>
+        </div>
+        <div class="font-card">
+          <div class="sample" style="font-family:'Plus Jakarta Sans',sans-serif;font-weight:700">Plus Jakarta Sans</div>
+          <div class="meta">Display &middot; Headings, brand text</div>
+        </div>
+        <div class="font-card">
+          <div class="sample" style="font-family:'Space Grotesk',monospace">Space Grotesk</div>
+          <div class="meta">Mono &middot; Labels, metadata, tags</div>
+        </div>
+      </div>
+
+      <h3>Visual Effects</h3>
+      <ul>
+        <li><strong>Dot Matrix Background</strong> &mdash; Radial gradient dot pattern on a 32&times;32px grid</li>
+        <li><strong>Custom Scrollbar</strong> &mdash; 6px thin scrollbar matching the dark theme</li>
+        <li><strong>Gradient Overlays</strong> &mdash; Directional gradients for text readability over media</li>
+        <li><strong>Motion Animations</strong> &mdash; Scroll-triggered and page-transition animations via Framer Motion</li>
+      </ul>
+    </section>
+
+    <!-- Deployment -->
+    <section id="deployment">
+      <h2>Deployment <span class="cn">部署说明</span></h2>
+      <p class="section-desc">Complete deployment guide covering local development, Nginx + PM2, Docker Compose, and cloud platforms. 完整的部署指南，涵盖本地开发、Nginx + PM2、Docker Compose 和云平台部署。</p>
+
+      <!-- Architecture Overview -->
+      <h3>1. Architecture Overview / 架构概览</h3>
+<pre><code>                    ┌─────────────────────────────────────────┐
+                    │              <span class="code-keyword">Production</span>                 │
+                    │                                         │
+  Browser ─────►   │  <span class="code-prop">Nginx</span> (port 80/443)                    │
+                    │    ├── /           → static files       │
+                    │    ├── /api/*      → proxy → Node.js    │
+                    │    └── /asset/*    → static files       │
+                    │                                         │
+                    │  <span class="code-prop">Node.js</span> (port 8080)                    │
+                    │    ├── Express API server               │
+                    │    ├── JSON file database (db.json)     │
+                    │    └── File upload handler (Multer)     │
+                    │                                         │
+                    │  <span class="code-prop">File System</span>                            │
+                    │    ├── ethereal/dist/        (frontend) │
+                    │    ├── ethereal/public/asset/ (media)   │
+                    │    └── ethereal-api-mock/data/ (db)     │
+                    └─────────────────────────────────────────┘</code></pre>
+
+      <h4>Key Paths in server.js / 后端关键路径</h4>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Variable</th><th>Path</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>DATA_DIR</code></td><td><code>ethereal-api-mock/data/</code></td><td>JSON database directory / 数据库目录</td></tr>
+            <tr><td><code>DB_FILE</code></td><td><code>ethereal-api-mock/data/db.json</code></td><td>Database file / 数据库文件</td></tr>
+            <tr><td><code>ASSET_DIR</code></td><td><code>ethereal/public/asset/</code></td><td>Uploaded media files / 上传的媒体文件</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="font-size:13px;color:var(--text-muted);background:var(--surface-low);border:1px solid var(--border);border-radius:8px;padding:12px 16px;">
+        <strong>&#9888; Note:</strong> <code>server.js</code> references the frontend directory as <code>Ethereal</code> (capital E) in relative paths. On case-sensitive Linux systems, ensure the directory name matches, or update <code>server.js</code> line 18 to use the correct casing.
+      </p>
+
+      <!-- Production Build -->
+      <h3>2. Production Build / 生产构建</h3>
+      <h4>2.1 Build Frontend / 构建前端</h4>
+<pre><code><span class="code-keyword">cd</span> ethereal
+<span class="code-keyword">npm run</span> build
+<span class="code-comment"># → Output: ethereal/dist/ (static HTML, JS, CSS, assets)</span></code></pre>
+
+      <h4>2.2 Verify Build / 验证构建</h4>
+<pre><code><span class="code-keyword">cd</span> ethereal
+<span class="code-keyword">npm run</span> preview
+<span class="code-comment"># → Preview: http://localhost:4173</span></code></pre>
+
+      <p style="font-size:13px;color:var(--text-muted);background:var(--surface-low);border:1px solid var(--border);border-radius:8px;padding:12px 16px;">
+        <strong>&#9888; Important:</strong> Production build does NOT include the Vite proxy. You must configure Nginx or another reverse proxy to forward <code>/api/*</code> requests to the backend.<br/>
+        生产构建不包含 Vite 代理，必须配置 Nginx 或其他反向代理将 <code>/api/*</code> 请求转发到后端。
+      </p>
+
+      <!-- Nginx + PM2 -->
+      <h3>3. Deploy with Nginx + PM2 / Nginx + PM2 部署</h3>
+      <p>Recommended for VPS / cloud server deployment (AWS EC2, Tencent Cloud CVM, Alibaba Cloud ECS). 推荐用于 VPS / 云服务器部署。</p>
+
+      <h4>3.1 Server Prerequisites / 服务器前置要求</h4>
+<pre><code><span class="code-comment"># Ubuntu/Debian</span>
+<span class="code-keyword">sudo apt</span> update
+<span class="code-keyword">sudo apt</span> install -y nginx nodejs npm
+
+<span class="code-comment"># Install Node.js 18+ via nvm (recommended / 推荐)</span>
+<span class="code-keyword">curl</span> -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+<span class="code-keyword">source</span> ~/.bashrc
+<span class="code-keyword">nvm</span> install 18
+<span class="code-keyword">nvm</span> use 18
+
+<span class="code-comment"># Install PM2 globally / 全局安装 PM2</span>
+<span class="code-keyword">npm</span> install -g pm2</code></pre>
+
+      <h4>3.2 Upload Project / 上传项目</h4>
+<pre><code><span class="code-comment"># Option A: Git clone on server / 在服务器上 git clone</span>
+<span class="code-keyword">ssh</span> user@your-server
+<span class="code-keyword">cd</span> /var/www
+<span class="code-keyword">git clone</span> &lt;repo-url&gt; EtherealProject
+
+<span class="code-comment"># Option B: rsync from local / 从本地 rsync</span>
+<span class="code-keyword">rsync</span> -avz --exclude='node_modules' --exclude='.git' \
+  ./EtherealProject/ user@your-server:/var/www/EtherealProject/</code></pre>
+
+      <h4>3.3 Install Dependencies & Build / 安装依赖并构建</h4>
+<pre><code><span class="code-keyword">cd</span> /var/www/EtherealProject
+
+<span class="code-comment"># Install and build frontend / 安装并构建前端</span>
+<span class="code-keyword">cd</span> ethereal
+<span class="code-keyword">npm</span> install
+<span class="code-keyword">npm run</span> build
+
+<span class="code-comment"># Install backend dependencies / 安装后端依赖</span>
+<span class="code-keyword">cd</span> ../ethereal-api-mock
+<span class="code-keyword">npm</span> install --production</code></pre>
+
+      <h4>3.4 Start Backend with PM2 / 用 PM2 启动后端</h4>
+<pre><code><span class="code-keyword">cd</span> /var/www/EtherealProject/ethereal-api-mock
+
+<span class="code-comment"># Start with PM2 / 用 PM2 启动</span>
+<span class="code-keyword">pm2</span> start server.js --name <span class="code-string">"ethereal-api"</span> --max-memory-restart 512M
+
+<span class="code-comment"># Save PM2 process list for auto-restart on reboot / 保存进程列表</span>
+<span class="code-keyword">pm2</span> save
+
+<span class="code-comment"># Enable auto-start on system boot / 开机自启</span>
+<span class="code-keyword">pm2</span> startup
+<span class="code-comment"># → Follow the output instructions</span>
+
+<span class="code-comment"># Useful PM2 commands / 常用 PM2 命令</span>
+<span class="code-keyword">pm2</span> status                <span class="code-comment"># View process status / 查看进程状态</span>
+<span class="code-keyword">pm2</span> logs ethereal-api     <span class="code-comment"># View logs / 查看日志</span>
+<span class="code-keyword">pm2</span> restart ethereal-api  <span class="code-comment"># Restart / 重启</span>
+<span class="code-keyword">pm2</span> stop ethereal-api     <span class="code-comment"># Stop / 停止</span>
+<span class="code-keyword">pm2</span> monit                 <span class="code-comment"># Real-time monitor / 实时监控</span></code></pre>
+
+      <h4>3.5 Configure Nginx / 配置 Nginx</h4>
+      <p>Create config: <code>sudo nano /etc/nginx/sites-available/ethereal</code></p>
+<pre><code><span class="code-keyword">server</span> {
+    <span class="code-prop">listen</span> <span class="code-string">80</span>;
+    <span class="code-prop">server_name</span> your-domain.com;  <span class="code-comment"># Replace with your domain / 替换为你的域名</span>
+
+    <span class="code-comment"># Frontend static files / 前端静态文件</span>
+    <span class="code-prop">root</span> /var/www/EtherealProject/ethereal/dist;
+    <span class="code-prop">index</span> index.html;
+
+    <span class="code-comment"># Gzip compression / Gzip 压缩</span>
+    <span class="code-prop">gzip</span> on;
+    <span class="code-prop">gzip_vary</span> on;
+    <span class="code-prop">gzip_min_length</span> 1024;
+    <span class="code-prop">gzip_types</span> text/plain text/css application/json application/javascript
+               text/xml application/xml text/javascript image/svg+xml;
+
+    <span class="code-comment"># Static asset caching / 静态资源缓存</span>
+    <span class="code-keyword">location</span> ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot|mp4|webm|mov)$ {
+        <span class="code-prop">expires</span> 30d;
+        <span class="code-prop">add_header</span> Cache-Control <span class="code-string">"public, immutable"</span>;
+        <span class="code-prop">try_files</span> $uri =404;
+    }
+
+    <span class="code-comment"># Project media assets (uploaded files) / 项目媒体资源</span>
+    <span class="code-keyword">location</span> /asset/ {
+        <span class="code-prop">alias</span> /var/www/EtherealProject/ethereal/public/asset/;
+        <span class="code-prop">expires</span> 7d;
+        <span class="code-prop">add_header</span> Cache-Control <span class="code-string">"public"</span>;
+        <span class="code-prop">client_max_body_size</span> 0;
+        <span class="code-prop">proxy_buffering</span> off;
+    }
+
+    <span class="code-comment"># API reverse proxy / API 反向代理</span>
+    <span class="code-keyword">location</span> /api/ {
+        <span class="code-prop">proxy_pass</span> http://127.0.0.1:8080;
+        <span class="code-prop">proxy_http_version</span> 1.1;
+        <span class="code-prop">proxy_set_header</span> Host $host;
+        <span class="code-prop">proxy_set_header</span> X-Real-IP $remote_addr;
+        <span class="code-prop">proxy_set_header</span> X-Forwarded-For $proxy_add_x_forwarded_for;
+        <span class="code-prop">proxy_set_header</span> X-Forwarded-Proto $scheme;
+
+        <span class="code-comment"># File upload size limit (1GB) / 文件上传大小限制</span>
+        <span class="code-prop">client_max_body_size</span> 1024M;
+
+        <span class="code-comment"># Timeout for large file uploads / 大文件上传超时设置</span>
+        <span class="code-prop">proxy_connect_timeout</span> 600;
+        <span class="code-prop">proxy_send_timeout</span> 600;
+        <span class="code-prop">proxy_read_timeout</span> 600;
+    }
+
+    <span class="code-comment"># SPA fallback / SPA 回退</span>
+    <span class="code-keyword">location</span> / {
+        <span class="code-prop">try_files</span> $uri $uri/ /index.html;
+    }
+
+    <span class="code-comment"># Security headers / 安全头</span>
+    <span class="code-prop">add_header</span> X-Frame-Options <span class="code-string">"SAMEORIGIN"</span> always;
+    <span class="code-prop">add_header</span> X-Content-Type-Options <span class="code-string">"nosniff"</span> always;
+    <span class="code-prop">add_header</span> X-XSS-Protection <span class="code-string">"1; mode=block"</span> always;
+}</code></pre>
+
+      <p>Enable the site and restart Nginx / 启用站点并重启 Nginx：</p>
+<pre><code><span class="code-comment"># Enable site / 启用站点</span>
+<span class="code-keyword">sudo ln</span> -s /etc/nginx/sites-available/ethereal /etc/nginx/sites-enabled/
+
+<span class="code-comment"># Remove default site (optional) / 移除默认站点（可选）</span>
+<span class="code-keyword">sudo rm</span> /etc/nginx/sites-enabled/default
+
+<span class="code-comment"># Test config / 测试配置</span>
+<span class="code-keyword">sudo nginx</span> -t
+
+<span class="code-comment"># Reload Nginx / 重载 Nginx</span>
+<span class="code-keyword">sudo systemctl</span> reload nginx</code></pre>
+
+      <h4>3.6 Configure HTTPS (Let's Encrypt) / 配置 HTTPS</h4>
+<pre><code><span class="code-comment"># Install Certbot / 安装 Certbot</span>
+<span class="code-keyword">sudo apt</span> install -y certbot python3-certbot-nginx
+
+<span class="code-comment"># Obtain certificate (auto-configures Nginx) / 获取证书（自动配置 Nginx）</span>
+<span class="code-keyword">sudo certbot</span> --nginx -d your-domain.com
+
+<span class="code-comment"># Auto-renewal test / 自动续期测试</span>
+<span class="code-keyword">sudo certbot</span> renew --dry-run
+
+<span class="code-comment"># Certbot sets up a cron job for automatic renewal</span>
+<span class="code-comment"># Certbot 会自动设置 cron 定时任务进行证书续期</span></code></pre>
+
+      <!-- Docker Compose -->
+      <h3>4. Deploy with Docker Compose / Docker Compose 部署</h3>
+      <p>Recommended for containerized deployment, ensuring consistent environments. 容器化部署的推荐方式，确保环境一致性。</p>
+
+      <h4>4.1 Backend Dockerfile</h4>
+      <p>Create <code>ethereal-api-mock/Dockerfile</code>:</p>
+<pre><code><span class="code-keyword">FROM</span> node:18-alpine
+
+<span class="code-keyword">WORKDIR</span> /app
+
+<span class="code-comment"># Copy package files and install dependencies</span>
+<span class="code-keyword">COPY</span> package.json package-lock.json* ./
+<span class="code-keyword">RUN</span> npm install --production
+
+<span class="code-comment"># Copy application code</span>
+<span class="code-keyword">COPY</span> server.js ./
+
+<span class="code-comment"># Create data directory for JSON database</span>
+<span class="code-keyword">RUN</span> mkdir -p /app/data
+
+<span class="code-comment"># Create asset directory (will be mounted as volume)</span>
+<span class="code-keyword">RUN</span> mkdir -p /app/asset
+
+<span class="code-keyword">EXPOSE</span> 8080
+
+<span class="code-comment"># Health check</span>
+<span class="code-keyword">HEALTHCHECK</span> --interval=30s --timeout=3s --start-period=5s --retries=3 \
+  CMD wget --no-verbose --tries=1 --spider http://localhost:8080/api/projects || exit 1
+
+<span class="code-keyword">CMD</span> [<span class="code-string">"node"</span>, <span class="code-string">"server.js"</span>]</code></pre>
+
+      <h4>4.2 Frontend Dockerfile (Multi-stage)</h4>
+      <p>Create <code>ethereal/Dockerfile</code>:</p>
+<pre><code><span class="code-comment"># Stage 1: Build / 构建阶段</span>
+<span class="code-keyword">FROM</span> node:18-alpine <span class="code-keyword">AS</span> builder
+<span class="code-keyword">WORKDIR</span> /app
+<span class="code-keyword">COPY</span> package.json package-lock.json* ./
+<span class="code-keyword">RUN</span> npm install
+<span class="code-keyword">COPY</span> . .
+<span class="code-keyword">RUN</span> npm run build
+
+<span class="code-comment"># Stage 2: Serve with Nginx / 用 Nginx 服务</span>
+<span class="code-keyword">FROM</span> nginx:alpine
+<span class="code-keyword">COPY</span> --from=builder /app/dist /usr/share/nginx/html
+<span class="code-keyword">COPY</span> nginx.conf /etc/nginx/conf.d/default.conf
+<span class="code-keyword">EXPOSE</span> 80
+<span class="code-keyword">CMD</span> [<span class="code-string">"nginx"</span>, <span class="code-string">"-g"</span>, <span class="code-string">"daemon off;"</span>]</code></pre>
+
+      <h4>4.3 Frontend Nginx Config</h4>
+      <p>Create <code>ethereal/nginx.conf</code>:</p>
+<pre><code><span class="code-keyword">server</span> {
+    <span class="code-prop">listen</span> 80;
+    <span class="code-prop">server_name</span> _;
+    <span class="code-prop">root</span> /usr/share/nginx/html;
+    <span class="code-prop">index</span> index.html;
+
+    <span class="code-comment"># Gzip</span>
+    <span class="code-prop">gzip</span> on;
+    <span class="code-prop">gzip_vary</span> on;
+    <span class="code-prop">gzip_min_length</span> 1024;
+    <span class="code-prop">gzip_types</span> text/plain text/css application/json
+               application/javascript text/javascript image/svg+xml;
+
+    <span class="code-comment"># Static assets cache</span>
+    <span class="code-keyword">location</span> ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
+        <span class="code-prop">expires</span> 30d;
+        <span class="code-prop">add_header</span> Cache-Control <span class="code-string">"public, immutable"</span>;
+    }
+
+    <span class="code-comment"># Project media assets</span>
+    <span class="code-keyword">location</span> /asset/ {
+        <span class="code-prop">alias</span> /var/www/asset/;
+        <span class="code-prop">expires</span> 7d;
+    }
+
+    <span class="code-comment"># API proxy to backend container</span>
+    <span class="code-keyword">location</span> /api/ {
+        <span class="code-prop">proxy_pass</span> http://backend:8080;
+        <span class="code-prop">proxy_http_version</span> 1.1;
+        <span class="code-prop">proxy_set_header</span> Host $host;
+        <span class="code-prop">proxy_set_header</span> X-Real-IP $remote_addr;
+        <span class="code-prop">client_max_body_size</span> 1024M;
+        <span class="code-prop">proxy_connect_timeout</span> 600;
+        <span class="code-prop">proxy_send_timeout</span> 600;
+        <span class="code-prop">proxy_read_timeout</span> 600;
+    }
+
+    <span class="code-comment"># SPA fallback</span>
+    <span class="code-keyword">location</span> / {
+        <span class="code-prop">try_files</span> $uri $uri/ /index.html;
+    }
+}</code></pre>
+
+      <h4>4.4 Docker Compose File</h4>
+      <p>Create <code>docker-compose.yml</code> in project root:</p>
+<pre><code><span class="code-prop">version</span>: <span class="code-string">'3.8'</span>
+
+<span class="code-prop">services</span>:
+  <span class="code-comment"># Backend API / 后端 API</span>
+  <span class="code-prop">backend</span>:
+    <span class="code-prop">build</span>:
+      <span class="code-prop">context</span>: ./ethereal-api-mock
+      <span class="code-prop">dockerfile</span>: Dockerfile
+    <span class="code-prop">container_name</span>: ethereal-api
+    <span class="code-prop">restart</span>: unless-stopped
+    <span class="code-prop">volumes</span>:
+      - api-data:/app/data        <span class="code-comment"># Persist database / 持久化数据库</span>
+      - asset-data:/app/asset     <span class="code-comment"># Share assets / 共享资源</span>
+    <span class="code-prop">networks</span>:
+      - ethereal-net
+    <span class="code-prop">healthcheck</span>:
+      <span class="code-prop">test</span>: [<span class="code-string">"CMD"</span>, <span class="code-string">"wget"</span>, <span class="code-string">"--spider"</span>, <span class="code-string">"-q"</span>, <span class="code-string">"http://localhost:8080/api/projects"</span>]
+      <span class="code-prop">interval</span>: 30s
+      <span class="code-prop">timeout</span>: 5s
+      <span class="code-prop">retries</span>: 3
+
+  <span class="code-comment"># Frontend + Nginx / 前端 + Nginx</span>
+  <span class="code-prop">frontend</span>:
+    <span class="code-prop">build</span>:
+      <span class="code-prop">context</span>: ./ethereal
+      <span class="code-prop">dockerfile</span>: Dockerfile
+    <span class="code-prop">container_name</span>: ethereal-web
+    <span class="code-prop">restart</span>: unless-stopped
+    <span class="code-prop">ports</span>:
+      - <span class="code-string">"80:80"</span>
+      - <span class="code-string">"443:443"</span>
+    <span class="code-prop">volumes</span>:
+      - asset-data:/var/www/asset
+    <span class="code-prop">depends_on</span>:
+      <span class="code-prop">backend</span>:
+        <span class="code-prop">condition</span>: service_healthy
+    <span class="code-prop">networks</span>:
+      - ethereal-net
+
+<span class="code-prop">volumes</span>:
+  <span class="code-prop">api-data</span>:
+    <span class="code-prop">driver</span>: local
+  <span class="code-prop">asset-data</span>:
+    <span class="code-prop">driver</span>: local
+
+<span class="code-prop">networks</span>:
+  <span class="code-prop">ethereal-net</span>:
+    <span class="code-prop">driver</span>: bridge</code></pre>
+
+      <h4>4.5 Build & Run / 构建并运行</h4>
+<pre><code><span class="code-comment"># Build and start all services / 构建并启动所有服务</span>
+<span class="code-keyword">docker compose</span> up -d --build
+
+<span class="code-comment"># View logs / 查看日志</span>
+<span class="code-keyword">docker compose</span> logs -f
+
+<span class="code-comment"># View running containers / 查看运行中的容器</span>
+<span class="code-keyword">docker compose</span> ps
+
+<span class="code-comment"># Stop all services / 停止所有服务</span>
+<span class="code-keyword">docker compose</span> down
+
+<span class="code-comment"># Rebuild a specific service / 重新构建某个服务</span>
+<span class="code-keyword">docker compose</span> up -d --build frontend</code></pre>
+
+      <h4>4.6 Update Deployment / 更新部署</h4>
+<pre><code><span class="code-comment"># Pull latest code / 拉取最新代码</span>
+<span class="code-keyword">git pull</span> origin main
+
+<span class="code-comment"># Rebuild and restart / 重新构建并重启</span>
+<span class="code-keyword">docker compose</span> up -d --build</code></pre>
+
+      <!-- Cloud Platforms -->
+      <h3>5. Deploy to Cloud Platforms / 云平台部署</h3>
+
+      <h4>5.1 Frontend &rarr; Vercel</h4>
+<pre><code><span class="code-comment"># Install Vercel CLI / 安装 Vercel CLI</span>
+<span class="code-keyword">npm</span> install -g vercel
+
+<span class="code-comment"># Deploy from the ethereal directory / 从 ethereal 目录部署</span>
+<span class="code-keyword">cd</span> ethereal
+<span class="code-keyword">vercel</span>
+
+<span class="code-comment"># Follow prompts: Framework: Vite, Build: npm run build, Output: dist</span></code></pre>
+      <p>Create <code>ethereal/vercel.json</code> for SPA routing and API proxy:</p>
+<pre><code>{
+  <span class="code-prop">"rewrites"</span>: [
+    { <span class="code-prop">"source"</span>: <span class="code-string">"/api/(.*)"</span>, <span class="code-prop">"destination"</span>: <span class="code-string">"https://your-backend-url.com/api/$1"</span> },
+    { <span class="code-prop">"source"</span>: <span class="code-string">"/(.*)"</span>, <span class="code-prop">"destination"</span>: <span class="code-string">"/index.html"</span> }
+  ]
+}</code></pre>
+
+      <h4>5.2 Frontend &rarr; Netlify</h4>
+      <p>Create <code>ethereal/netlify.toml</code>:</p>
+<pre><code><span class="code-keyword">[build]</span>
+  <span class="code-prop">command</span> = <span class="code-string">"npm run build"</span>
+  <span class="code-prop">publish</span> = <span class="code-string">"dist"</span>
+
+<span class="code-keyword">[[redirects]]</span>
+  <span class="code-prop">from</span> = <span class="code-string">"/api/*"</span>
+  <span class="code-prop">to</span> = <span class="code-string">"https://your-backend-url.com/api/:splat"</span>
+  <span class="code-prop">status</span> = 200
+
+<span class="code-keyword">[[redirects]]</span>
+  <span class="code-prop">from</span> = <span class="code-string">"/*"</span>
+  <span class="code-prop">to</span> = <span class="code-string">"/index.html"</span>
+  <span class="code-prop">status</span> = 200</code></pre>
+
+      <h4>5.3 Backend &rarr; Railway</h4>
+      <div class="steps">
+        <div class="step"><div class="step-content"><p>Push <code>ethereal-api-mock/</code> to a Git repo or use monorepo root</p></div></div>
+        <div class="step"><div class="step-content"><p>Connect the repo to <a href="https://railway.app">Railway</a></p></div></div>
+        <div class="step"><div class="step-content"><p>Configure: Root Directory <code>ethereal-api-mock</code>, Start Command <code>node server.js</code>, Port <code>8080</code></p></div></div>
+      </div>
+
+      <h4>5.4 Backend &rarr; Render</h4>
+      <div class="steps">
+        <div class="step"><div class="step-content"><p>Create a new <strong>Web Service</strong> on <a href="https://render.com">Render</a></p></div></div>
+        <div class="step"><div class="step-content"><p>Root Directory: <code>ethereal-api-mock</code>, Build: <code>npm install</code>, Start: <code>node server.js</code></p></div></div>
+        <div class="step"><div class="step-content"><p>Add a <strong>Disk</strong> for persistent storage at mount path <code>/app/data</code> (for <code>db.json</code>)</p></div></div>
+      </div>
+
+      <!-- Server Directory Layout -->
+      <h3>6. Server Directory Layout / 生产服务器目录布局</h3>
+      <div class="tree"><span class="dir">/var/www/EtherealProject/</span>
+├── <span class="dir">ethereal/</span>
+│   ├── <span class="dir">dist/</span>                  <span class="comment">← Nginx serves this (frontend build)</span>
+│   │   ├── <span class="file">index.html</span>
+│   │   ├── <span class="dir">assets/</span>
+│   │   │   ├── <span class="file">index-xxxx.js</span>
+│   │   │   └── <span class="file">index-xxxx.css</span>
+│   │   └── <span class="file">home-bg.png</span>
+│   └── <span class="dir">public/</span>
+│       └── <span class="dir">asset/</span>             <span class="comment">← Media files (videos, images)</span>
+│           ├── <span class="dir">三尺之下/</span>
+│           ├── <span class="dir">攻玉/</span>
+│           └── ...
+│
+├── <span class="dir">ethereal-api-mock/</span>
+│   ├── <span class="file">server.js</span>              <span class="comment">← Express API (run with PM2)</span>
+│   ├── <span class="dir">node_modules/</span>
+│   └── <span class="dir">data/</span>
+│       └── <span class="file">db.json</span>            <span class="comment">← JSON database (auto-created)</span></div>
+
+      <!-- Environment Variables -->
+      <h3>7. Environment Variables / 环境变量</h3>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Variable</th><th>Used By</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>GEMINI_API_KEY</code></td><td>Frontend</td><td>No</td><td>Google Gemini API key (reserved for future use)</td></tr>
+            <tr><td><code>DISABLE_HMR</code></td><td>Frontend</td><td>No</td><td>Set <code>true</code> to disable Vite HMR</td></tr>
+            <tr><td><code>NODE_ENV</code></td><td>Backend</td><td>No</td><td>Set <code>production</code> for production</td></tr>
+            <tr><td><code>PORT</code></td><td>Backend</td><td>No</td><td>API server port (default: <code>8080</code>)</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>For frontend env vars, create <code>ethereal/.env</code>: 前端环境变量需在 <code>ethereal/</code> 下创建 <code>.env</code> 文件。</p>
+<pre><code><span class="code-comment"># ethereal/.env</span>
+<span class="code-prop">GEMINI_API_KEY</span>=<span class="code-string">your-api-key-here</span></code></pre>
+
+      <!-- Data Backup -->
+      <h3>8. Data Backup / 数据备份</h3>
+      <p>The JSON database and uploaded assets should be backed up regularly. 生产环境中应定期备份数据库和媒体资源。</p>
+<pre><code><span class="code-comment">#!/bin/bash</span>
+<span class="code-comment"># backup.sh — Run daily via cron / 通过 cron 每天执行</span>
+<span class="code-comment"># crontab -e → 0 3 * * * /var/www/EtherealProject/backup.sh</span>
+
+<span class="code-prop">BACKUP_DIR</span>=<span class="code-string">"/var/backups/ethereal/$(date +%Y%m%d)"</span>
+<span class="code-prop">PROJECT_DIR</span>=<span class="code-string">"/var/www/EtherealProject"</span>
+
+<span class="code-keyword">mkdir</span> -p <span class="code-string">"$BACKUP_DIR"</span>
+
+<span class="code-comment"># Backup database / 备份数据库</span>
+<span class="code-keyword">cp</span> <span class="code-string">"$PROJECT_DIR/ethereal-api-mock/data/db.json"</span> <span class="code-string">"$BACKUP_DIR/db.json"</span>
+
+<span class="code-comment"># Backup media assets (incremental) / 备份媒体资源（增量）</span>
+<span class="code-keyword">rsync</span> -a <span class="code-string">"$PROJECT_DIR/ethereal/public/asset/"</span> <span class="code-string">"$BACKUP_DIR/asset/"</span>
+
+<span class="code-comment"># Keep only last 30 days / 只保留最近 30 天</span>
+<span class="code-keyword">find</span> /var/backups/ethereal/ -maxdepth 1 -type d -mtime +30 -exec rm -rf {} \;
+
+<span class="code-keyword">echo</span> <span class="code-string">"[$(date)] Backup completed → $BACKUP_DIR"</span></code></pre>
+
+      <!-- Security Checklist -->
+      <h3>9. Security Checklist / 安全检查清单</h3>
+      <p>Before going to production, review and address the following items. 上线前请检查以下安全事项。</p>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Item / 项目</th><th>Status</th><th>Action / 操作</th></tr></thead>
+          <tbody>
+            <tr><td>1</td><td><strong>Password hashing</strong></td><td style="color:#fbbf24">&#9888; Plain text</td><td>Replace with bcrypt: <code>npm install bcrypt</code></td></tr>
+            <tr><td>2</td><td><strong>Auth tokens</strong></td><td style="color:#fbbf24">&#9888; User ID as token</td><td>Implement JWT: <code>npm install jsonwebtoken</code></td></tr>
+            <tr><td>3</td><td><strong>CORS config</strong></td><td style="color:#fbbf24">&#9888; Allow all origins</td><td>Restrict to your domain in <code>server.js</code></td></tr>
+            <tr><td>4</td><td><strong>HTTPS</strong></td><td style="color:#fbbf24">&#9888; Not configured</td><td>Set up Let's Encrypt (see Section 3.6)</td></tr>
+            <tr><td>5</td><td><strong>Rate limiting</strong></td><td style="color:#fbbf24">&#9888; None</td><td><code>npm install express-rate-limit</code></td></tr>
+            <tr><td>6</td><td><strong>File upload validation</strong></td><td style="color:#fbbf24">&#9888; No type check</td><td>Validate MIME types in Multer config</td></tr>
+            <tr><td>7</td><td><strong>Default admin password</strong></td><td style="color:#fbbf24">&#9888; <code>123456</code></td><td>Change immediately after first login</td></tr>
+            <tr><td>8</td><td><strong>Input sanitization</strong></td><td style="color:#fbbf24">&#9888; Basic</td><td><code>npm install express-validator</code></td></tr>
+            <tr><td>9</td><td><strong>Database</strong></td><td style="color:#fbbf24">&#9888; JSON file</td><td>Migrate to PostgreSQL / MongoDB</td></tr>
+            <tr><td>10</td><td><strong>Firewall</strong></td><td>&#8212;</td><td>Only expose ports 80, 443, 22 (SSH)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Troubleshooting -->
+      <h3>10. Troubleshooting / 常见问题</h3>
+
+      <h4>API requests return 404 in production / 生产环境 API 返回 404</h4>
+      <p>The Vite proxy only works in development. Ensure Nginx is configured to proxy <code>/api/*</code> to the backend. Vite 代理仅在开发模式下工作，需确保 Nginx 配置了反向代理。</p>
+
+      <h4>File uploads fail / 文件上传失败</h4>
+      <p>Check Nginx <code>client_max_body_size</code> is set to at least <code>1024M</code>. 检查 Nginx 的 <code>client_max_body_size</code>。</p>
+<pre><code><span class="code-comment"># In the /api/ location block:</span>
+<span class="code-prop">client_max_body_size</span> 1024M;</code></pre>
+
+      <h4>Case-sensitive path issues on Linux / Linux 路径大小写问题</h4>
+      <p><code>server.js</code> line 18 references <code>'Ethereal'</code> (capital E). If your directory is named <code>ethereal</code> (lowercase), update:</p>
+<pre><code><span class="code-comment">// server.js line 18 — change 'Ethereal' to match your directory name</span>
+<span class="code-keyword">const</span> <span class="code-prop">ASSET_DIR</span> = path.resolve(__dirname, <span class="code-string">'..'</span>, <span class="code-string">'ethereal'</span>, <span class="code-string">'public'</span>, <span class="code-string">'asset'</span>);</code></pre>
+
+      <h4>PM2 process crashed / PM2 进程崩溃</h4>
+<pre><code><span class="code-keyword">pm2</span> logs ethereal-api --lines 50   <span class="code-comment"># View recent logs / 查看日志</span>
+<span class="code-keyword">pm2</span> restart ethereal-api            <span class="code-comment"># Restart / 重启</span></code></pre>
+
+      <h4>Docker containers won't start / Docker 容器无法启动</h4>
+<pre><code><span class="code-keyword">docker compose</span> logs backend    <span class="code-comment"># Check backend logs</span>
+<span class="code-keyword">docker compose</span> logs frontend   <span class="code-comment"># Check frontend logs</span>
+<span class="code-keyword">docker compose</span> down && <span class="code-keyword">docker compose</span> up -d --build  <span class="code-comment"># Rebuild</span></code></pre>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="brand">E STUDIO</div>
+    <div class="tagline">Where Vision Meets Reality</div>
+    <div class="tech">Built with React &middot; TypeScript &middot; Vite &middot; Tailwind CSS &middot; Express</div>
+  </footer>
+
+</body>
+</html>

@@ -1,8 +1,9 @@
 import { useState, useRef, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { Search } from 'lucide-react';
+import { Search, Share2 } from 'lucide-react';
 import { projects as localProjects } from '../data/projects';
+import { useAuth } from '../context/AuthContext';
 
 // 排版引擎保持不变
 const autoLayouts = [
@@ -90,12 +91,57 @@ const ProjectItem = ({ project, index }: { project: any, index: number }) => {
 };
 
 export function Projects() {
-  const [activeFilter, setActiveFilter] = useState('All');
+  const [activeFilters, setActiveFilters] = useState<Set<string>>(new Set());
   const [activeLetter, setActiveLetter] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [scaleMultiplier, setScaleMultiplier] = useState(0.7);
   const [projects, setProjects] = useState(localProjects);
   const [loaded, setLoaded] = useState(false);
+  const { currentUser } = useAuth();
+  const isAdmin = currentUser?.permissions?.[0] === 'super_admin' || currentUser?.permissions?.[0] === 'admin';
+  const [sharing, setSharing] = useState(false);
+  const [shareMsg, setShareMsg] = useState('');
+
+  const toggleFilter = (f: string) => {
+    setActiveFilters(prev => {
+      const next = new Set(prev);
+      if (next.has(f)) next.delete(f);
+      else next.add(f);
+      return next;
+    });
+    setActiveLetter(null);
+  };
+
+  const handleShareFilter = async () => {
+    const token = localStorage.getItem('ethereal_token');
+    if (!token) return;
+    setSharing(true);
+    setShareMsg('');
+    try {
+      const resp = await fetch('/api/admin/share-filter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          token,
+          filter: { activeFilters: Array.from(activeFilters), activeLetter, searchQuery },
+          name: activeFilters.size > 0 ? Array.from(activeFilters).join(' + ') : (activeLetter || 'All Projects'),
+        }),
+      });
+      const data = await resp.json();
+      if (data.success) {
+        const url = `${window.location.origin}${data.url}`;
+        await navigator.clipboard.writeText(url);
+        setShareMsg('✅ 链接已复制到剪贴板！');
+        setTimeout(() => setShareMsg(''), 3000);
+      } else {
+        setShareMsg('❌ ' + (data.error || '创建失败'));
+      }
+    } catch {
+      setShareMsg('❌ 创建失败');
+    } finally {
+      setSharing(false);
+    }
+  };
 
   // 从 API 获取项目数据（叠加本地数据）
   useEffect(() => {
@@ -167,10 +213,10 @@ export function Projects() {
       );
     }
 
-    // 分类/标签过滤
-    if (activeFilter !== 'All') {
+    // 分类/标签过滤（多选，OR 逻辑）
+    if (activeFilters.size > 0) {
       result = result.filter(p =>
-        p.type === activeFilter || p.tasks?.includes(activeFilter)
+        Array.from(activeFilters).some(f => p.type === f || p.tasks?.includes(f))
       );
     }
 
@@ -187,7 +233,7 @@ export function Projects() {
       if (la !== '#' && lb === '#') return -1;
       return la.localeCompare(lb);
     });
-  }, [projects, activeFilter, activeLetter, searchQuery]);
+  }, [projects, activeFilters, activeLetter, searchQuery]);
 
   // 按首字母分组用于显示节标题和字母导航
   const groupedByLetter = useMemo(() => {
@@ -210,12 +256,22 @@ export function Projects() {
 
           {/* 分类/标签过滤器 */}
           <div className="flex flex-wrap items-center gap-2">
-            {filterOptions.map(f => (
+            <button
+              onClick={() => { setActiveFilters(new Set()); setActiveLetter(null); }}
+              className={`px-3 py-1 rounded-full font-mono text-[9px] uppercase tracking-[0.15em] transition-all border ${
+                activeFilters.size === 0
+                  ? 'bg-white text-black border-white'
+                  : 'border-white/20 text-zinc-500 hover:text-white hover:border-white/40'
+              }`}
+            >
+              All
+            </button>
+            {filterOptions.filter(f => f !== 'All').map(f => (
               <button
                 key={f}
-                onClick={() => { setActiveFilter(f); setActiveLetter(null); }}
+                onClick={() => toggleFilter(f)}
                 className={`px-3 py-1 rounded-full font-mono text-[9px] uppercase tracking-[0.15em] transition-all border ${
-                  activeFilter === f
+                  activeFilters.has(f)
                     ? 'bg-white text-black border-white'
                     : 'border-white/20 text-zinc-500 hover:text-white hover:border-white/40'
                 }`}
@@ -239,6 +295,24 @@ export function Projects() {
                 className="w-16 h-[2px] bg-white/20 rounded-full appearance-none outline-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2.5 [&::-webkit-slider-thumb]:h-2.5 [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:rounded-full"
               />
             </div>
+            {isAdmin && (
+              <div className="relative">
+                <button
+                  onClick={handleShareFilter}
+                  disabled={sharing}
+                  className="flex items-center gap-1.5 px-3 py-2.5 border border-white/20 rounded-full font-mono text-[8px] text-zinc-400 hover:text-white hover:border-white/40 transition-all disabled:opacity-40"
+                  title="Share this filter"
+                >
+                  <Share2 size={11} />
+                  {sharing ? '...' : 'Share'}
+                </button>
+                {shareMsg && (
+                  <div className="absolute right-0 top-full mt-2 whitespace-nowrap px-3 py-1.5 bg-white/10 border border-white/20 rounded font-mono text-[9px] text-white shadow-2xl z-50">
+                    {shareMsg}
+                  </div>
+                )}
+              </div>
+            )}
           </div>
         </div>
 
@@ -262,11 +336,10 @@ export function Projects() {
                 key={letter}
                 onClick={() => {
                   if (isActive) { setActiveLetter(null); return; }
-                  // 只有有这个字母的项目时才允许切换
                   const allLetters = new Set(projects.map(p => getFirstLetter(p.title)));
                   if (allLetters.has(letter)) {
                     setActiveLetter(letter);
-                    setActiveFilter('All');
+                    setActiveFilters(new Set());
                   }
                 }}
                 className={`font-mono text-[11px] w-7 h-6 flex items-center justify-center rounded transition-all ${
@@ -287,7 +360,7 @@ export function Projects() {
               const allLetters = new Set(projects.map(p => getFirstLetter(p.title)));
               if (allLetters.has('#')) {
                 setActiveLetter('#');
-                setActiveFilter('All');
+                setActiveFilters(new Set());
               }
             }}
             className={`font-mono text-[11px] w-7 h-6 flex items-center justify-center rounded transition-all ${

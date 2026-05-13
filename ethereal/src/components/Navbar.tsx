@@ -1,4 +1,4 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Menu, X, Bookmark } from 'lucide-react';
 import { useState, useEffect } from 'react';
@@ -7,8 +7,12 @@ import { useAuth } from '../context/AuthContext';
 export function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const { currentUser, logout } = useAuth();
+
+  const isShareContext = location.pathname.startsWith('/share/') ||
+    (location.pathname.startsWith('/project/') && searchParams.has('share'));
 
   useEffect(() => {
     setIsOpen(false);
@@ -30,32 +34,36 @@ export function Navbar() {
   return (
     <nav className="absolute top-0 left-0 w-full z-50 bg-transparent text-white pt-6">
       <div className="w-full mx-auto flex justify-between items-center p-4 md:px-16 relative z-50">
-        <Link to="/" className="font-display font-bold text-xs tracking-[0.2em] uppercase hover:text-white/80 transition-colors">
+        <Link
+          to={isShareContext
+            ? (location.pathname.startsWith('/share/') ? location.pathname : `/share/${searchParams.get('share')}`)
+            : '/'}
+          className="font-display font-bold text-xs tracking-[0.2em] uppercase hover:text-white/80 transition-colors"
+        >
           E STUDIO
         </Link>
 
         {/* --- 桌面端导航 --- */}
-        <div className="hidden md:flex items-center gap-12">
-          {/* 1. 常规页面链接 */}
-          <div className="flex gap-12">
-            {links.map((link) => (
-              <Link
-                key={link.path}
-                to={link.path}
-                className={`relative font-mono text-[10px] uppercase tracking-[0.2em] transition-colors ${
-                  location.pathname.startsWith(link.path) ? 'text-white' : 'text-zinc-500 hover:text-white'
-                }`}
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
+        {!isShareContext && (
+          <div className="hidden md:flex items-center gap-12">
+            {/* 1. 常规页面链接 */}
+            <div className="flex gap-12">
+              {links.map((link) => (
+                <Link
+                  key={link.path}
+                  to={link.path}
+                  className={`relative font-mono text-[10px] uppercase tracking-[0.2em] transition-colors ${
+                    location.pathname.startsWith(link.path) ? 'text-white' : 'text-zinc-500 hover:text-white'
+                  }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
 
-          {/* 2. 账号与权限控制区 */}
-          <div className="flex items-center gap-6 border-l border-white/10 pl-12 ml-2">
-            {isLoggedIn ? (
-              <>
-                {/* 收藏入口 — 所有登录用户可见 */}
+            {/* 2. 账号与权限控制区 */}
+            {isLoggedIn && (
+              <div className="flex items-center gap-6 border-l border-white/10 pl-12 ml-2">
                 <Link
                   to="/bookmarks"
                   className={`flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors ${
@@ -66,7 +74,6 @@ export function Navbar() {
                   Bookmarks
                 </Link>
 
-                {/* 管理后台 — 仅超级管理员和管理员可见 */}
                 {(currentUser?.permissions?.[0] === 'super_admin' || currentUser?.permissions?.[0] === 'admin') && (
                   <Link
                     to="/admin"
@@ -83,31 +90,24 @@ export function Navbar() {
                 >
                   Logout
                 </button>
-              </>
-            ) : (
-              <Link
-                to="/login"
-                className={`font-mono text-[10px] uppercase tracking-[0.2em] transition-colors ${
-                  location.pathname === '/login' ? 'text-white' : 'text-zinc-500 hover:text-white'
-                }`}
-              >
-                Login
-              </Link>
+              </div>
             )}
           </div>
-        </div>
+        )}
 
-        <button
-          className="md:hidden text-zinc-500 hover:text-white p-2 -mr-2"
-          onClick={() => setIsOpen(!isOpen)}
-        >
-          {isOpen ? <X size={20} /> : <Menu size={20} />}
-        </button>
+        {!isShareContext && (
+          <button
+            className="md:hidden text-zinc-500 hover:text-white p-2 -mr-2"
+            onClick={() => setIsOpen(!isOpen)}
+          >
+            {isOpen ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        )}
       </div>
 
       {/* --- 移动端导航 --- */}
       <AnimatePresence>
-        {isOpen && (
+        {isOpen && !isShareContext && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
@@ -130,11 +130,9 @@ export function Navbar() {
                 </Link>
               ))}
 
-              {/* 账户功能分隔线 */}
-              <div className="h-[1px] w-full bg-white/10 my-2"></div>
+              {isLoggedIn && <div className="h-[1px] w-full bg-white/10 my-2"></div>}
 
-              {/* 账户链接 */}
-              {isLoggedIn ? (
+              {isLoggedIn && (
                 <>
                   <Link
                     to="/bookmarks"
@@ -167,16 +165,6 @@ export function Navbar() {
                     Logout
                   </button>
                 </>
-              ) : (
-                <Link
-                  to="/login"
-                  onClick={() => setIsOpen(false)}
-                  className={`font-mono text-sm uppercase tracking-[0.2em] ${
-                    location.pathname === '/login' ? 'text-white' : 'text-zinc-500 hover:text-white'
-                  }`}
-                >
-                  Login
-                </Link>
               )}
             </div>
           </motion.div>

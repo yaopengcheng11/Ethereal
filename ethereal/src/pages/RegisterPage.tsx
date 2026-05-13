@@ -38,14 +38,14 @@ export default function RegisterPage() {
 
   if (!code) {
     return (
-      <div className="flex items-center justify-center min-h-[80vh] text-zinc-500 font-mono text-[10px] tracking-[0.2em] uppercase">
+      <div className="flex items-center justify-center min-h-screen bg-background text-zinc-500 font-mono text-[10px] tracking-[0.2em] uppercase">
         Access Denied: Missing Invitation Code
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full px-4 pt-24 pb-12">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full px-4 bg-background">
       <div className="w-full max-w-md text-center mb-8">
         <h2 className="text-3xl font-display font-bold text-white tracking-[0.2em] uppercase">
           Join E Studio

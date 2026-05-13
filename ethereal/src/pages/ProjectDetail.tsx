@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Play, Pause, X, Volume2, VolumeX, ArrowLeft, Bookmark, BookmarkCheck, Heart, Download } from 'lucide-react';
 import { projects } from '../data/projects';
@@ -7,43 +7,30 @@ import { useAuth } from '../context/AuthContext';
 
 const isVideo = (url: string) => /\.(mp4|webm|mov)$/i.test(url);
 
-function DownloadBtn({ filePath, isLoggedIn, onLoginRedirect }: {
+function DownloadBtn({ filePath, isLoggedIn }: {
   filePath: string | null;
   isLoggedIn: boolean;
-  onLoginRedirect: () => void;
 }) {
-  if (!filePath) return null;
+  if (!filePath || !isLoggedIn) return null;
 
-  if (isLoggedIn) {
-    return (
-      <a
-        href={`/api/download?token=${localStorage.getItem('ethereal_token')}&path=${encodeURIComponent(filePath)}`}
-        download
-        title="Download"
-        className="absolute top-3 right-3 z-20 p-2 bg-black/60 backdrop-blur-sm border border-white/20 rounded-full opacity-0 group-hover:opacity-100 hover:bg-white hover:text-black transition-all duration-300 shadow-lg"
-        onClick={(e) => e.stopPropagation()}
-      >
-        <Download size={12} />
-      </a>
-    );
-  }
   return (
-    <button
-      onClick={(e) => { e.stopPropagation(); onLoginRedirect(); }}
-      title="Login to Download"
-      className="absolute top-3 right-3 z-20 p-2 bg-black/60 backdrop-blur-sm border border-white/20 rounded-full opacity-0 group-hover:opacity-100 hover:bg-yellow-500/20 hover:border-yellow-500/40 transition-all duration-300 shadow-lg"
+    <a
+      href={`/api/download?token=${localStorage.getItem('ethereal_token')}&path=${encodeURIComponent(filePath)}`}
+      download
+      title="Download"
+      className="absolute top-3 right-3 z-20 p-2 bg-black/60 backdrop-blur-sm border border-white/20 rounded-full opacity-0 group-hover:opacity-100 hover:bg-white hover:text-black transition-all duration-300 shadow-lg"
+      onClick={(e) => e.stopPropagation()}
     >
-      <Download size={12} className="text-zinc-400" />
-    </button>
+      <Download size={12} />
+    </a>
   );
 }
 
-const GalleryItem = ({ item, layoutClass, onClick, isLoggedIn, onLoginRedirect }: {
+const GalleryItem = ({ item, layoutClass, onClick, isLoggedIn }: {
   item: string;
   layoutClass: string;
   onClick: () => void;
   isLoggedIn: boolean;
-  onLoginRedirect: () => void;
   key?: number | string;
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -76,7 +63,7 @@ const GalleryItem = ({ item, layoutClass, onClick, isLoggedIn, onLoginRedirect }
           &rarr; VIEW
         </p>
       </div>
-      <DownloadBtn filePath={item} isLoggedIn={isLoggedIn} onLoginRedirect={onLoginRedirect} />
+      <DownloadBtn filePath={item} isLoggedIn={isLoggedIn} />
     </motion.div>
   );
 };
@@ -84,6 +71,10 @@ const GalleryItem = ({ item, layoutClass, onClick, isLoggedIn, onLoginRedirect }
 export function ProjectDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const shareToken = searchParams.get('share');
+  const backPath = shareToken ? `/share/${shareToken}` : '/projects';
+  const backLabel = shareToken ? 'Shared Projects (ESC)' : 'All Projects (ESC)';
   const decodedId = id ? decodeURIComponent(id) : '';
   const [project, setProject] = useState(() => projects.find(p => p.id === decodedId || p.id === id) || projects[0]);
   const [loading, setLoading] = useState(true);
@@ -129,10 +120,7 @@ export function ProjectDetail() {
   }, [currentUser, project]);
 
   const handleToggleBookmark = async () => {
-    if (!currentUser) {
-      navigate('/login');
-      return;
-    }
+    if (!currentUser) return;
     setBookmarkLoading(true);
     try {
       const endpoint = isBookmarked ? '/api/bookmarks/remove' : '/api/bookmarks/add';
@@ -157,7 +145,7 @@ export function ProjectDetail() {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' || e.key === 'Esc') {
         if (fullscreenImage) setFullscreenImage(null);
-        else navigate('/projects');
+        else navigate(backPath);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -189,40 +177,34 @@ export function ProjectDetail() {
       <div className="w-full mx-auto relative z-10 max-w-[1400px]">
 
         <div className="flex justify-between items-end mb-6">
-          <Link to="/projects" className="group flex items-center gap-3 text-text-muted hover:text-white transition-colors pb-1 border-b border-transparent hover:border-white">
+          <Link to={backPath} className="group flex items-center gap-3 text-text-muted hover:text-white transition-colors pb-1 border-b border-transparent hover:border-white">
             <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" />
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em]">All Projects (ESC)</span>
+            <span className="font-mono text-[10px] uppercase tracking-[0.2em]">{backLabel}</span>
           </Link>
 
-          {/* 收藏按钮 */}
-          <button
-            onClick={handleToggleBookmark}
-            disabled={bookmarkLoading}
-            className={`group flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] pb-1 border-b transition-all ${
-              !currentUser
-                ? 'text-zinc-500 border-zinc-700 hover:text-white hover:border-white'
-                : isBookmarked
+          {!shareToken && currentUser && (
+            <button
+              onClick={handleToggleBookmark}
+              disabled={bookmarkLoading}
+              className={`group flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.2em] pb-1 border-b transition-all ${
+                isBookmarked
                   ? 'text-yellow-400 border-yellow-400/50'
                   : 'text-zinc-500 border-zinc-700 hover:text-white hover:border-white'
-            }`}
-          >
-            {!currentUser ? (
-              <>
-                <Bookmark size={12} className="group-hover:scale-110 transition-transform" />
-                Login to Save
-              </>
-            ) : isBookmarked ? (
-              <>
-                <BookmarkCheck size={12} className="animate-in zoom-in" />
-                Saved
-              </>
-            ) : (
-              <>
-                <Bookmark size={12} className="group-hover:scale-110 transition-transform" />
-                Save to Bookmarks
-              </>
-            )}
-          </button>
+              }`}
+            >
+              {isBookmarked ? (
+                <>
+                  <BookmarkCheck size={12} className="animate-in zoom-in" />
+                  Saved
+                </>
+              ) : (
+                <>
+                  <Bookmark size={12} className="group-hover:scale-110 transition-transform" />
+                  Save to Bookmarks
+                </>
+              )}
+            </button>
+          )}
         </div>
 
         {/* 顶部主视觉 */}
@@ -332,7 +314,6 @@ export function ProjectDetail() {
                     layoutClass={layoutClass}
                     onClick={() => setFullscreenImage(item)}
                     isLoggedIn={currentUser !== null}
-                    onLoginRedirect={() => navigate('/login')}
                   />
                 );
               })}

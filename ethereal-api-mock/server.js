@@ -582,6 +582,80 @@ app.post('/api/admin/tags/delete', (req, res) => {
 });
 
 // ==========================================
+// 接口 11：共享筛选链接
+// ==========================================
+
+// 11a. 创建共享筛选链接（仅 admin/super_admin）
+app.post('/api/admin/share-filter', (req, res) => {
+  const { token, filter, name } = req.body;
+  const user = getCurrentUser(token);
+  if (!user) return res.status(401).json({ error: '未登录' });
+  if (!['super_admin', 'admin'].includes(user.permissions[0])) {
+    return res.status(403).json({ error: '无权创建分享链接' });
+  }
+  if (!filter) return res.status(400).json({ error: '需要 filter 参数' });
+
+  const shareToken = uuidv4().slice(0, 8);
+  db.sharedFilters = db.sharedFilters || [];
+  db.sharedFilters.push({
+    token: shareToken,
+    filter,
+    name: name || '',
+    createdBy: user.email,
+    createdAt: new Date().toISOString(),
+  });
+  saveDB();
+  console.log(`[分享] ${user.email} 创建了筛选分享: ${shareToken}`);
+  res.json({
+    success: true,
+    shareToken,
+    url: `/share/${shareToken}`,
+  });
+});
+
+// 11b. 获取共享筛选内容（公开，无需登录）
+app.get('/api/share/:token', (req, res) => {
+  db.sharedFilters = db.sharedFilters || [];
+  const share = db.sharedFilters.find(s => s.token === req.params.token);
+  if (!share) return res.status(404).json({ error: '分享链接不存在或已失效' });
+
+  const { filter } = share;
+  let projects = [...db.projects];
+
+  // 应用相同的筛选逻辑
+  if (filter.searchQuery) {
+    const q = filter.searchQuery.toLowerCase();
+    projects = projects.filter(p =>
+      p.title.toLowerCase().includes(q) ||
+      (p.title_en || '').toLowerCase().includes(q) ||
+      (p.tasks || []).some(t => t.toLowerCase().includes(q)) ||
+      (p.description || '').toLowerCase().includes(q)
+    );
+  }
+  const filters = filter.activeFilters || (filter.activeFilter && filter.activeFilter !== 'All' ? [filter.activeFilter] : []);
+  if (filters.length > 0) {
+    projects = projects.filter(p =>
+      filters.some(f => p.type === f || p.tasks?.includes(f))
+    );
+  }
+  if (filter.activeLetter) {
+    // 简化：返回给前端让前端自己过滤
+    // 后端只用其他条件过滤，首字母在前端处理
+  }
+
+  res.json({
+    success: true,
+    share: {
+      name: share.name,
+      createdAt: share.createdAt,
+      createdBy: share.createdBy,
+    },
+    filter: share.filter,
+    projects,
+  });
+});
+
+// ==========================================
 // 启动
 // ==========================================
 app.listen(8080, () => {

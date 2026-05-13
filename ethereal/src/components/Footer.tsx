@@ -1,6 +1,26 @@
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 
 export function Footer() {
+  const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const isShareContext = location.pathname.startsWith('/share/') ||
+    (location.pathname.startsWith('/project/') && searchParams.has('share'));
+
+  if (isShareContext) {
+    return (
+      <footer className="py-8 px-4 md:px-8 border-t border-white/10 mt-24 bg-background">
+        <div className="max-w-[1600px] mx-auto text-center">
+          <h3 className="font-display font-bold text-xs tracking-[0.2em] uppercase mb-2 text-white">
+            E STUDIO
+          </h3>
+          <p className="font-mono text-[9px] text-text-muted uppercase tracking-widest">
+            Pushing the boundaries of visual storytelling. © {new Date().getFullYear()}
+          </p>
+        </div>
+      </footer>
+    );
+  }
+
   return (
     <footer className="py-8 px-4 md:px-8 border-t border-white/10 mt-24 bg-background">
       <div className="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-8">

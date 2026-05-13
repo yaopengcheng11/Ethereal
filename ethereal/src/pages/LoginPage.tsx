@@ -38,7 +38,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full px-4 pt-24 pb-12">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full px-4 bg-background">
       <div className="w-full max-w-md text-center mb-8">
         <h2 className="text-3xl font-display font-bold text-white tracking-[0.2em] uppercase">
           E STUDIO

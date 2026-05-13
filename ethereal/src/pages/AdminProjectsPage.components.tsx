@@ -106,13 +106,21 @@ export function TagInput({ tags, onChange, placeholder, suggestions }: {
     setModalData(null);
   };
 
+  const isExistingTag = (val: string) => (suggestions || []).some(s => s === val);
+
   const handleEnter = () => {
     const trimmed = input.trim();
     if (!trimmed) return;
     if (tags.includes(trimmed)) { setInput(''); return; }
-    if (filtered.length > 0) { addTag(filtered[0]); return; }
-    if (similarTags.length > 0) { setModalData({ input: trimmed, similars: similarTags }); return; }
-    addTag(trimmed);
+    if (isExistingTag(trimmed)) { addTag(trimmed); return; }
+    if (selectedIdx >= 0 && suggestionItems[selectedIdx]) { addTag(suggestionItems[selectedIdx]); return; }
+    const allSimilars = (suggestions || [])
+      .filter(s => !tags.includes(s))
+      .map(s => ({ tag: s, score: jaccardSimilarity(trimmed, s) }))
+      .filter(s => s.score > 0.1)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5);
+    setModalData({ input: trimmed, similars: allSimilars });
   };
 
   useEffect(() => {
@@ -183,7 +191,9 @@ export function TagInput({ tags, onChange, placeholder, suggestions }: {
               </div>
               <div>
                 <h3 className="font-display text-sm font-bold text-white tracking-[0.1em]">标签「{modalData.input}」不存在</h3>
-                <p className="font-mono text-[9px] text-zinc-500 mt-0.5">是否想使用以下相似标签？</p>
+                <p className="font-mono text-[9px] text-zinc-500 mt-0.5">
+                  {modalData.similars.length > 0 ? '是否想使用以下相似标签？' : '确定要创建这个新标签吗？'}
+                </p>
               </div>
             </div>
 
